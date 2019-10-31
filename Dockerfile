@@ -7,6 +7,7 @@ LABEL stage=intermediate
 # Take an SSH key as a build argument.
 ARG SSH_PRIVATE_KEY
 ARG GIT_BRANCH
+
 # Install dependencies required to git clone.
 RUN apk update && \
     apk add --update git && \
@@ -23,8 +24,7 @@ RUN mkdir -p /root/.ssh/ && \
 
 
 # Clone a repository (my website in this case)
-RUN git clone git@github.com:valinkrai/django-personal-website.git
-RUN cd django-personal-website && git checkout "$GIT_BRANCH"
+RUN git clone --branch "$GIT_BRANCH" git@github.com:valinkrai/django-personal-website.git
 
 # Pull base image
 FROM python:3.7-slim
