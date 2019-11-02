@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  
+  db:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  
+  web:
+    build: .
+    command: "gunicorn django_personal_website.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - static_volume:/srv/static
+      - media_volume:/srv/media
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+  
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/srv/static
+      - media_volume:/srv/media
+    ports:
+      - 80:80
+    depends_on:
+      - web
+    
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

@@ -34,12 +34,20 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Set work directory
-WORKDIR /code
+WORKDIR /app
+RUN mkdir /srv/static
+RUN mkdir /srv/media
 
 # Install dependencies
 RUN pip install pipenv
-COPY Pipfile Pipfile.lock /code/
+COPY Pipfile Pipfile.lock /app/
 RUN pipenv install --system
 
 # Copy project
-COPY --from=intermediate /django-personal-website/ /code/
+COPY --from=intermediate /django-personal-website/ /app/
+
+# Copy entry point
+COPY ./entrypoint.sh /app/entrypoint.sh
+
+# run entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
